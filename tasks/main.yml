@@ -31,7 +31,7 @@
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
       - /home/{{default_user}}/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-  when: "{{DOCKER_NETWORK_MODE}}" == 'host'
+  when: DOCKER_NETWORK_MODE == 'host'
 
 - name: Elasticsearch
   docker_container:
@@ -53,5 +53,5 @@
     volumes:
       - node_data:/usr/share/elasticsearch/data
       - /home/{{default_user}}/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-  when: "{{DOCKER_NETWORK_MODE}}" == 'bridge'
+  when: DOCKER_NETWORK_MODE == 'bridge'
 
