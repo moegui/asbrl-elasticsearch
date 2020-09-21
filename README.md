@@ -47,7 +47,11 @@ None
 Example Playbook
 ----------------
 
-      - name: 
+      - name: Deploy Elasticsearch
+        include_role:
+          name: asbrl-elasticsearch
+        vars:
+          DOCKER_NETWORK_MODE: "host"
 
 License
 -------
