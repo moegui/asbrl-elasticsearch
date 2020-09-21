@@ -1,0 +1,57 @@
+---
+- name: Create Elasticsearch directory
+  file:
+    path: /home/{{default_user}}/elasticsearch/
+    state: directory  
+
+- name: Elasticsearch Data Volume
+  docker_volume:
+    name: elasticsearch_data
+    state: present
+
+- name: ES config file
+  template:
+    src: elasticsearch.yml.j2
+    dest: /home/{{default_user}}/elasticsearch/elasticsearch.yml    
+
+- name: Elasticsearch
+  docker_container:
+    name: "elasticsearch"
+    hostname: "{{HOSTNAME}}"
+    image: "{{IMAGE}}:{{BUILD}}"
+    pull: "true"
+    env:
+      ES_JAVA_OPTS: "-Djava.net.preferIPv4Stack=true -Xms{{ES_HEAP_SIZE}} -Xmx{{ES_HEAP_SIZE}}"
+    network_mode: "host" 
+    recreate: "yes"
+    state: "started"
+    log_driver: "{{DOCKER_LOG_DRIVER}}"
+    log_options: "{{DOCKER_LOG_OPTIONS}}"
+    restart_policy: "unless-stopped"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+      - /home/{{default_user}}/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  when: "{{DOCKER_NETWORK_MODE}}" == 'host'
+
+- name: Elasticsearch
+  docker_container:
+    name: "elasticsearch"
+    hostname: "{{HOSTNAME}}"
+    image: "{{IMAGE}}:{{BUILD}}"
+    pull: "true"
+    env:
+      ES_JAVA_OPTS: "-Djava.net.preferIPv4Stack=true -Xms{{ES_HEAP_SIZE}} -Xmx{{ES_HEAP_SIZE}}"
+    network_mode: "bridge" 
+    recreate: "yes"
+    state: "started"
+    log_driver: "{{DOCKER_LOG_DRIVER}}"
+    log_options: "{{DOCKER_LOG_OPTIONS}}"
+    restart_policy: "unless-stopped"
+    published_ports:
+      - "0.0.0.0:9200:9200"
+      - "0.0.0.0:9300:9300"
+    volumes:
+      - node_data:/usr/share/elasticsearch/data
+      - /home/{{default_user}}/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  when: "{{DOCKER_NETWORK_MODE}}" == 'bridge'
+
