@@ -1,0 +1,52 @@
+cluster.name: {{ CLUSTER_NAME }}
+
+cluster.initial_master_nodes: {{ INITIAL_MASTER_NODES }}
+  
+bootstrap.memory_lock: {{ BOOTSTRAP_MEMORY_LOCK }}
+
+{% if DISCOVERY_SEED_PROVIDERS == "hosts" %}
+discovery.seed_hosts: {{ DISCOVERY_SERVICE }}
+{% elif DISCOVERY_SEED_PROVIDERS == "ec2" %}
+discovery.seed_providers: ec2
+discovery.ec2.tag.{{DISCOVERY_EC2_TAG_NAME}}: {{DISCOVERY_EC2_TAG_VALUE}}
+{% endif %}
+
+http.compression: {{ HTTP_COMPRESSION }}
+http.compression_level: {{ HTTP_COMPRESSION_LEVEL }}
+
+node.data: {{ NODE_DATA }}
+{% if NODE_VOTING_ONLY == "true" %}
+node.master: true
+{% else %}
+node.master: {{ NODE_MASTER }}
+{% endif %}
+node.ingest: {{ NODE_INGEST }}
+node.voting_only: {{ NODE_VOTING_ONLY }}
+node.name: ${HOSTNAME}
+network.host: {{ NETWORK_HOST }}
+
+xpack.security.enabled: {{ XPACK_SECURITY_ENABLED }}
+# xpack.security.transport.ssl.enabled: ${XPACK_SECURITY_SSL_ENABLED:false}
+# xpack.security.transport.ssl.verification_mode: certificate 
+# xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/node.key
+# xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/node.crt
+# xpack.security.transport.ssl.certificate_authorities: [ "/usr/share/elasticsearch/config/ca.crt" ]
+# xpack.security.http.ssl.enabled: ${XPACK_SECURITY_SSL_ENABLED:false}
+# xpack.security.http.ssl.key: /usr/share/elasticsearch/config/node.key
+# xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/node.crt
+# xpack.security.http.ssl.certificate_authorities: [ "/usr/share/elasticsearch/config/ca.crt" ]
+# xpack.security.http.ssl.verification_mode: certificate
+xpack.ml.enabled: false
+xpack.monitoring.collection.enabled: {{ XPACK_MONITORING_ENABLED }}
+xpack.monitoring.elasticsearch.collection.enabled: {{ XPACK_MONITORING_COLLECTION_ENABLED }}
+xpack.monitoring.history.duration: {{ XPACK_MONITORING_HISTORY_DURATION }}
+
+# see https://github.com/elastic/elasticsearch-definitive-guide/pull/679
+processors: ${PROCESSORS:}
+
+# avoid split-brain w/ a minimum consensus of two masters plus a data node
+gateway.expected_master_nodes: ${EXPECTED_MASTER_NODES:1}
+gateway.expected_data_nodes: ${EXPECTED_DATA_NODES:1}
+gateway.recover_after_time: ${RECOVER_AFTER_TIME:5m}
+gateway.recover_after_master_nodes: ${RECOVER_AFTER_MASTER_NODES:1}
+gateway.recover_after_data_nodes: ${RECOVER_AFTER_DATA_NODES:1}
