@@ -26,11 +26,17 @@ node.name: ${HOSTNAME}
 network.host: {{ NETWORK_HOST }}
 
 xpack.security.enabled: {{ XPACK_SECURITY_ENABLED }}
-# xpack.security.transport.ssl.enabled: ${XPACK_SECURITY_SSL_ENABLED:false}
-# xpack.security.transport.ssl.verification_mode: certificate 
-# xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/node.key
-# xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/node.crt
-# xpack.security.transport.ssl.certificate_authorities: [ "/usr/share/elasticsearch/config/ca.crt" ]
+
+{% if XPACK_SECURITY_TRANSPORT_SSL_ENABLED == "true" %}
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: {{ XPACK_SECURITY_TRANSPORT_SSL_VERIFICATION_MODE }}
+xpack.security.transport.ssl.key: {{ XPACK_SECURITY_TRANSPORT_SSL_KEY }}
+xpack.security.transport.ssl.certificate: {{ XPACK_SECURITY_TRANSPORT_SSL_CERTIFICATE }}
+xpack.security.transport.ssl.certificate_authorities: {{ XPACK_SECURITY_TRANSPORT_SSL_CERTIFICATE_AUTHORITIES }}
+{% else %}
+xpack.security.transport.ssl.enabled: false
+{% endif %}
+
 # xpack.security.http.ssl.enabled: ${XPACK_SECURITY_SSL_ENABLED:false}
 # xpack.security.http.ssl.key: /usr/share/elasticsearch/config/node.key
 # xpack.security.http.ssl.certificate: /usr/share/elasticsearch/config/node.crt
