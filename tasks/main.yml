@@ -22,26 +22,8 @@
     pull: "true"
     env:
       ES_JAVA_OPTS: "-Djava.net.preferIPv4Stack=true -Xms{{ES_HEAP_SIZE}} -Xmx{{ES_HEAP_SIZE}}"
-    network_mode: "host" 
-    recreate: "yes"
-    state: "started"
-    log_driver: "{{DOCKER_LOG_DRIVER}}"
-    log_options: "{{DOCKER_LOG_OPTIONS}}"
-    restart_policy: "unless-stopped"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-      - /home/{{default_user}}/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-  when: DOCKER_NETWORK_MODE == 'host'
-
-- name: Elasticsearch
-  docker_container:
-    name: "elasticsearch"
-    hostname: "{{HOSTNAME}}"
-    image: "{{IMAGE}}:{{BUILD}}"
-    pull: "true"
-    env:
-      ES_JAVA_OPTS: "-Djava.net.preferIPv4Stack=true -Xms{{ES_HEAP_SIZE}} -Xmx{{ES_HEAP_SIZE}}"
-    network_mode: "bridge" 
+      ELASTIC_PASSWORD: "{{ADMIN_PASSWORD}}"
+    network_mode: "{{DOCKER_NETWORK_MODE}}" 
     recreate: "yes"
     state: "started"
     log_driver: "{{DOCKER_LOG_DRIVER}}"
@@ -53,5 +35,5 @@
     volumes:
       - node_data:/usr/share/elasticsearch/data
       - /home/{{default_user}}/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-  when: DOCKER_NETWORK_MODE == 'bridge'
+      - /home/{{default_user}}/elasticsearch/certificates/:/usr/share/elasticsearch/config/certificates
 

@@ -1,5 +1,4 @@
 cluster.name: {{ CLUSTER_NAME }}
-
 cluster.initial_master_nodes: {{ INITIAL_MASTER_NODES }}
   
 bootstrap.memory_lock: {{ BOOTSTRAP_MEMORY_LOCK }}
@@ -30,9 +29,9 @@ xpack.security.enabled: {{ XPACK_SECURITY_ENABLED }}
 {% if XPACK_SECURITY_TRANSPORT_SSL_ENABLED == "true" %}
 xpack.security.transport.ssl.enabled: true
 xpack.security.transport.ssl.verification_mode: {{ XPACK_SECURITY_TRANSPORT_SSL_VERIFICATION_MODE }}
-xpack.security.transport.ssl.key: {{ XPACK_SECURITY_TRANSPORT_SSL_KEY }}
-xpack.security.transport.ssl.certificate: {{ XPACK_SECURITY_TRANSPORT_SSL_CERTIFICATE }}
-xpack.security.transport.ssl.certificate_authorities: {{ XPACK_SECURITY_TRANSPORT_SSL_CERTIFICATE_AUTHORITIES }}
+xpack.security.transport.ssl.key: /usr/share/elasticsearch/config/certificates/{{ XPACK_SECURITY_TRANSPORT_SSL_KEY }}
+xpack.security.transport.ssl.certificate: /usr/share/elasticsearch/config/certificates/{{ XPACK_SECURITY_TRANSPORT_SSL_CERTIFICATE }}
+#xpack.security.transport.ssl.certificate_authorities: {{ XPACK_SECURITY_TRANSPORT_SSL_CERTIFICATE_AUTHORITIES }}
 {% else %}
 xpack.security.transport.ssl.enabled: false
 {% endif %}
