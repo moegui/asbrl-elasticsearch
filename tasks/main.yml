@@ -1,22 +1,22 @@
 ---
 - name: Create Elasticsearch directory
   file:
-    path: /home/{{default_user}}/elasticsearch/
+    path: /home/{{default_user}}/{{CONTAINER_NAME}}/certificates/
     state: directory  
 
 - name: Elasticsearch Data Volume
   docker_volume:
-    name: elasticsearch_data
+    name: "{{CONTAINER_NAME}}_data"
     state: present
 
 - name: ES config file
   template:
     src: elasticsearch.yml.j2
-    dest: /home/{{default_user}}/elasticsearch/elasticsearch.yml    
+    dest: /home/{{default_user}}/{{CONTAINER_NAME}}/elasticsearch.yml    
 
 - name: Elasticsearch
   docker_container:
-    name: "elasticsearch"
+    name: "{{CONTAINER_NAME}}"
     hostname: "{{HOSTNAME}}"
     image: "{{IMAGE}}:{{BUILD}}"
     pull: "true"
@@ -24,6 +24,8 @@
       ES_JAVA_OPTS: "-Djava.net.preferIPv4Stack=true -Xms{{ES_HEAP_SIZE}} -Xmx{{ES_HEAP_SIZE}}"
       ELASTIC_PASSWORD: "{{ADMIN_PASSWORD}}"
     network_mode: "{{DOCKER_NETWORK_MODE}}" 
+    cpu_period: "{{DOCKER_CPU_PERIOD}}"
+    memory: "{{DOCKER_MEMORY}}"
     recreate: "yes"
     state: "started"
     log_driver: "{{DOCKER_LOG_DRIVER}}"
@@ -33,7 +35,9 @@
       - "0.0.0.0:9200:9200"
       - "0.0.0.0:9300:9300"
     volumes:
-      - node_data:/usr/share/elasticsearch/data
-      - /home/{{default_user}}/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - /home/{{default_user}}/elasticsearch/certificates/:/usr/share/elasticsearch/config/certificates
+      - "{{CONTAINER_NAME}}_data:/usr/share/elasticsearch/data"
+      - /home/{{default_user}}/{{CONTAINER_NAME}}/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - /home/{{default_user}}/{{CONTAINER_NAME}}/certificates/:/usr/share/elasticsearch/config/certificates
+    labels: 
+      "{{ DOCKER_LABELS }}"
 
