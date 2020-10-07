@@ -25,6 +25,7 @@
       ELASTIC_PASSWORD: "{{ADMIN_PASSWORD}}"
     network_mode: "{{DOCKER_NETWORK_MODE}}" 
     cpu_period: "{{DOCKER_CPU_PERIOD}}"
+    cpu_quota: "{{DOCKER_CPU_QUOTA}}"
     memory: "{{DOCKER_MEMORY}}"
     recreate: "yes"
     state: "started"
