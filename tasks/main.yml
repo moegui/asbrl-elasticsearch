@@ -3,7 +3,7 @@
   file:
     path: /home/{{ default_user }}/{{ CONTAINER_NAME }}/certificates/
     state: directory
-    mode: 0644
+    mode: 0755
 
 - name: Elasticsearch Data Volume
   docker_volume:
